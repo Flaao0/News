@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.example.news"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -72,4 +72,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.kotlinx.serialization)
 }
