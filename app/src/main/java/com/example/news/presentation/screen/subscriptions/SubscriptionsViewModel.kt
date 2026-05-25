@@ -54,10 +54,10 @@ class SubscriptionsViewModel @Inject constructor(
 
             SubscriptionsCommand.ClickedSubscribe -> {
                 viewModelScope.launch {
-                    _state.update { prevState ->
-                        val query = state.value.query.trim()
-                        addSubscriptionUseCase(query)
-                        prevState.copy(query = "")
+                    val currentQuery = state.value.query.trim()
+                    if (currentQuery.isNotEmpty()) {
+                        addSubscriptionUseCase(currentQuery)
+                        _state.update { it.copy(query = "") }
                     }
                 }
             }
