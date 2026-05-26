@@ -1,5 +1,6 @@
 package com.example.news.presentation.screen.subscriptions
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,17 +37,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -62,8 +64,7 @@ fun SubscriptionsScreen(
     viewModel: SubscriptionsViewModel = hiltViewModel()
 ) {
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
+        modifier = modifier.fillMaxSize(), topBar = {
             SubscriptionsTopBar(
                 onRefreshDataClick = {
                     viewModel.processCommand(SubscriptionsCommand.RefreshData)
@@ -73,8 +74,7 @@ fun SubscriptionsScreen(
                 },
                 onSettingsClick = onNavigateToSettings,
             )
-        }
-    ) {innerPadding ->
+        }) { innerPadding ->
         val state by viewModel.state.collectAsStateWithLifecycle()
         LazyColumn(
             modifier = Modifier
@@ -99,8 +99,7 @@ fun SubscriptionsScreen(
                     },
                     onTopicClick = {
                         viewModel.processCommand(SubscriptionsCommand.ToggleTopicSelection(it))
-                    }
-                )
+                    })
             }
 
             if (state.articles.isNotEmpty()) {
@@ -108,15 +107,16 @@ fun SubscriptionsScreen(
                     HorizontalDivider()
                 }
                 item {
-                    Text(text = stringResource(R.string.articles, state.articles.size), fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(R.string.articles, state.articles.size),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 item {
                     HorizontalDivider()
                 }
                 items(
-                    items = state.articles,
-                    key = { it.url }
-                ) {
+                    items = state.articles, key = { it.url }) {
                     ArticleCard(article = it)
                 }
             } else if (state.subscriptions.isNotEmpty()) {
@@ -156,6 +156,7 @@ private fun SubscriptionsTopBar(
             imageVector = Icons.Default.Refresh,
             contentDescription = stringResource(R.string.update_articles)
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Icon(
             modifier = Modifier
                 .clip(CircleShape)
@@ -165,6 +166,7 @@ private fun SubscriptionsTopBar(
             imageVector = Icons.Default.Clear,
             contentDescription = stringResource(R.string.clear_articles)
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Icon(
             modifier = Modifier
                 .clip(CircleShape)
@@ -174,6 +176,7 @@ private fun SubscriptionsTopBar(
             imageVector = Icons.Default.Settings,
             contentDescription = stringResource(R.string.settings_screen)
         )
+        Spacer(modifier = Modifier.width(8.dp))
     })
 }
 
@@ -319,8 +322,7 @@ private fun ArticleCard(article: Article, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = article.sourceName,
-                color = MaterialTheme.colorScheme.primary
+                text = article.sourceName, color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = article.publishedAt.formatDate(),
@@ -337,10 +339,12 @@ private fun ArticleCard(article: Article, modifier: Modifier = Modifier) {
                 .padding(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            val context = LocalContext.current
             Button(
-                modifier = Modifier.weight(1f),
-                onClick = {}
-            ) {
+                modifier = Modifier.weight(1f), onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, article.url.toUri())
+                    context.startActivity(intent)
+                }) {
                 Icon(
                     imageVector = Icons.Default.OpenInNew,
                     contentDescription = stringResource(R.string.open_article, article.title)
@@ -350,9 +354,13 @@ private fun ArticleCard(article: Article, modifier: Modifier = Modifier) {
             }
 
             Button(
-                modifier = Modifier.weight(1f),
-                onClick = {}
-            ) {
+                modifier = Modifier.weight(1f), onClick = {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "${article.title}\n\n${article.url}")
+                    }
+                    context.startActivity(intent)
+                }) {
                 Icon(
                     imageVector = Icons.Default.Share,
                     contentDescription = stringResource(R.string.share_article)
