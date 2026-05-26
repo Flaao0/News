@@ -29,6 +29,7 @@ class NewsRepositoryImpl @Inject constructor(
 
     override suspend fun addSubscription(topic: String) {
         newsDao.addSubscription(SubscriptionDbModel(topic))
+        updateArticlesForTopic(topic)
     }
 
     override suspend fun updateArticlesForTopic(topic: String) {
