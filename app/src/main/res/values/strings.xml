@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">News</string>
+    <string name="subsctiptions_title">My News</string>
+    <string name="update_articles">Update articles</string>
+    <string name="settings_screen">Settings screen</string>
+    <string name="clear_articles">Clear articles</string>
+    <string name="remove_subscription">Remove subscription</string>
+    <string name="what_interests_you">What interests you?</string>
+    <string name="add_subscribe">add subscribe</string>
+    <string name="add_subscription">Add subscription</string>
+    <string name="subscriptions">Subscriptions (%1$d)</string>
+    <string name="no_subscriptions">No subscriptions</string>
+    <string name="image_for_article">Image for article %1$s</string>
+    <string name="open_article">Open article %1$s</string>
+    <string name="read">Read</string>
+    <string name="share">Share</string>
+    <string name="share_article">Share article</string>
+    <string name="articles">Articles (%1$d)</string>
+    <string name="no_articles_for_selected_subscriptions">No articles for selected subscriptions</string>
 </resources>

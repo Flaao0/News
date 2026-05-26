@@ -34,6 +34,6 @@ fun List<ArticleDbModel>.toEntities(): List<Article> {
 }
 
 private fun String.toTimeStamp() : Long {
-    val dateFormatter = SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss'Z'", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
     return dateFormatter.parse(this)?.time ?: System.currentTimeMillis()
 }
