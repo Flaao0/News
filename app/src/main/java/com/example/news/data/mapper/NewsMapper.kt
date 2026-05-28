@@ -4,6 +4,8 @@ import com.example.news.data.local.ArticleDbModel
 import com.example.news.data.remote.NewsResponseDto
 import com.example.news.domain.entity.Article
 import com.example.news.domain.entity.Interval
+import com.example.news.domain.entity.RefreshConfig
+import com.example.news.domain.entity.Settings
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -41,4 +43,10 @@ private fun String.toTimeStamp() : Long {
 
 fun Int.toInterval(): Interval {
     return Interval.entries.first { it.minutes == this }
+}
+
+fun Settings.toRefreshConfig(): RefreshConfig {
+    return RefreshConfig(
+        language, interval, wifiOnly
+    )
 }
