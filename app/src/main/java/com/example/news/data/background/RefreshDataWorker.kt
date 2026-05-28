@@ -13,13 +13,15 @@ import dagger.assisted.AssistedInject
 class RefreshDataWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val updateArticlesForAllSubscriptionsUseCase: UpdateArticlesForAllSubscriptionsUseCase
+    private val updateArticlesForAllSubscriptionsUseCase: UpdateArticlesForAllSubscriptionsUseCase,
+    private val notificationsHelper: NotificationsHelper
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
         Log.d("RefreshDataWorker", "start worker")
         updateArticlesForAllSubscriptionsUseCase()
         Log.d("RefreshDataWorker", "stop worker")
+        notificationsHelper.showNewArticlesNotification(listOf())
         return Result.success()
     }
 }
