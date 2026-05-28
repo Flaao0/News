@@ -1,5 +1,5 @@
 [versions]
-agp = "9.2.1"
+agp = "9.1.0"
 coilCompose = "3.4.0"
 coilNetworkOkhttp = "3.4.0"
 converterKotlinxSerialization = "3.0.0"
