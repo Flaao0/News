@@ -12,8 +12,10 @@ import com.example.news.data.local.NewsDao
 import com.example.news.data.local.SubscriptionDbModel
 import com.example.news.data.mapper.toDbModels
 import com.example.news.data.mapper.toEntities
+import com.example.news.data.mapper.toQueryParam
 import com.example.news.data.remote.NewsApiService
 import com.example.news.domain.entity.Article
+import com.example.news.domain.entity.Language
 import com.example.news.domain.entity.RefreshConfig
 import com.example.news.domain.repository.NewsRepository
 import jakarta.inject.Inject
@@ -39,17 +41,17 @@ class NewsRepositoryImpl @Inject constructor(
 
     override suspend fun addSubscription(topic: String) {
         newsDao.addSubscription(SubscriptionDbModel(topic))
-        updateArticlesForTopic(topic)
     }
 
-    override suspend fun updateArticlesForTopic(topic: String) {
-        val articles = loadArticles(topic)
-        newsDao.addArticles(articles)
+    override suspend fun updateArticlesForTopic(topic: String, language: Language): Boolean {
+        val articles = loadArticles(topic, language)
+        val ids = newsDao.addArticles(articles)
+        return ids.any { it != -1L }
     }
 
-    private suspend fun loadArticles(topic: String): List<ArticleDbModel> {
+    private suspend fun loadArticles(topic: String, language: Language): List<ArticleDbModel> {
         return try {
-            newsApiService.loadArticles(topic).toDbModels(topic)
+            newsApiService.loadArticles(topic, language.toQueryParam()).toDbModels(topic)
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
@@ -63,16 +65,20 @@ class NewsRepositoryImpl @Inject constructor(
         newsDao.deleteSubscription(SubscriptionDbModel(topic))
     }
 
-    override suspend fun updateArticlesForAllSubscriptions() {
+    override suspend fun updateArticlesForAllSubscriptions(language: Language): List<String> {
+        val updatedTopics = mutableListOf<String>()
         val subscriptions = newsDao.getAllSubscriptions().first()
         coroutineScope {
             subscriptions.forEach {
                 launch {
-                    updateArticlesForTopic(it.topic)
+                    val updated = updateArticlesForTopic(it.topic, language)
+                    if (updated) {
+                        updatedTopics.add(it.topic)
+                    }
                 }
             }
         }
-
+        return updatedTopics
     }
 
     override fun getArticlesByTopics(topics: List<String>): Flow<List<Article>> {

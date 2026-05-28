@@ -4,6 +4,7 @@ import com.example.news.data.local.ArticleDbModel
 import com.example.news.data.remote.NewsResponseDto
 import com.example.news.domain.entity.Article
 import com.example.news.domain.entity.Interval
+import com.example.news.domain.entity.Language
 import com.example.news.domain.entity.RefreshConfig
 import com.example.news.domain.entity.Settings
 import java.text.SimpleDateFormat
@@ -49,4 +50,13 @@ fun Settings.toRefreshConfig(): RefreshConfig {
     return RefreshConfig(
         language, interval, wifiOnly
     )
+}
+
+fun Language.toQueryParam(): String {
+    return when(this) {
+        Language.ENGLISH -> "en"
+        Language.RUSSIAN -> "ru"
+        Language.FRENCH -> "fr"
+        Language.GERMAN -> "ge"
+    }
 }

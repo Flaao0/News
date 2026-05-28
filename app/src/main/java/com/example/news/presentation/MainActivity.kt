@@ -20,10 +20,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        lifecycleScope.launch {
-            repository.addSubscription("Kotlin")
-            repository.updateArticlesForTopic("Kotlin")
-        }
         setContent {
             NewsTheme {
                 SubscriptionsScreen(
