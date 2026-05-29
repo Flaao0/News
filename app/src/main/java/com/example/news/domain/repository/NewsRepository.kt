@@ -1,6 +1,8 @@
 package com.example.news.domain.repository
 
 import com.example.news.domain.entity.Article
+import com.example.news.domain.entity.Language
+import com.example.news.domain.entity.RefreshConfig
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
@@ -9,13 +11,17 @@ interface NewsRepository {
 
     suspend fun addSubscription(topic: String)
 
-    suspend fun updateArticlesForTopic(topic: String)
+    suspend fun updateArticlesForTopic(topic: String, language: Language): Boolean
 
     suspend fun removeSubscription(topic: String)
 
-    suspend fun updateArticlesForAllSubscriptions()
+    suspend fun updateArticlesForAllSubscriptions(language: Language): List<String>
 
     fun getArticlesByTopics(topics: List<String>): Flow<List<Article>>
 
     suspend fun clearAllArticles(topics: List<String>)
+
+    fun startBackgroundRefresh(
+        refreshConfig: RefreshConfig
+    )
 }
