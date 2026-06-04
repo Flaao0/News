@@ -43,4 +43,7 @@
     <string name="show_notifications_about_articles">Show notifications about articles</string>
     <string name="update_only_via_wi_fi">Update only via Wi-Fi</string>
     <string name="save_mobile_data">Save mobile data</string>
+    <string name="project_credits_title">Проект сделали:</string>
+    <string name="project_credit_author_1">Петунин Владислав</string>
+    <string name="project_credit_author_2">Анаев Даниил</string>
 </resources>
