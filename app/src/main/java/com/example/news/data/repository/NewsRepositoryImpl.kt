@@ -12,6 +12,7 @@ import com.example.news.data.local.NewsDao
 import com.example.news.data.local.SubscriptionDbModel
 import com.example.news.data.mapper.toDbModels
 import com.example.news.data.mapper.toEntities
+import com.example.news.data.mapper.toEntity
 import com.example.news.data.mapper.toQueryParam
 import com.example.news.data.remote.NewsApiService
 import com.example.news.domain.entity.Article
@@ -85,6 +86,10 @@ class NewsRepositoryImpl @Inject constructor(
         return newsDao.getAllArticlesByTopics(topics).map {
             it.toEntities()
         }
+    }
+
+    override fun getArticleByUrl(url: String): Flow<Article?> {
+        return newsDao.getArticleByUrl(url).map { it?.toEntity() }
     }
 
     override suspend fun clearAllArticles(topics: List<String>) {

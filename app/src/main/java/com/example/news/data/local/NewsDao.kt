@@ -24,6 +24,9 @@ interface NewsDao {
     @Query("SELECT * FROM articles WHERE topic IN (:topics) ORDER BY publishedAt DESC")
     fun getAllArticlesByTopics(topics: List<String>): Flow<List<ArticleDbModel>>
 
+    @Query("SELECT * FROM articles WHERE url = :url LIMIT 1")
+    fun getArticleByUrl(url: String): Flow<ArticleDbModel?>
+
     @Insert(onConflict = IGNORE)
     suspend fun addArticles(articles: List<ArticleDbModel>): List<Long>
 

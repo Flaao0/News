@@ -61,6 +61,7 @@ import com.example.news.presentation.utils.formatDate
 fun SubscriptionsScreen(
     modifier: Modifier = Modifier,
     onNavigateToSettings: () -> Unit,
+    onArticleClick: (String) -> Unit,
     viewModel: SubscriptionsViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -117,7 +118,10 @@ fun SubscriptionsScreen(
                 }
                 items(
                     items = state.articles, key = { it.url }) {
-                    ArticleCard(article = it)
+                    ArticleCard(
+                        article = it,
+                        onArticleClick = onArticleClick,
+                    )
                 }
             } else if (state.subscriptions.isNotEmpty()) {
                 item {
@@ -275,7 +279,11 @@ private fun Subscriptions(
 }
 
 @Composable
-private fun ArticleCard(article: Article, modifier: Modifier = Modifier) {
+private fun ArticleCard(
+    article: Article,
+    onArticleClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -283,55 +291,61 @@ private fun ArticleCard(article: Article, modifier: Modifier = Modifier) {
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        article.imageUrl?.let {
-            AsyncImage(
-                model = it,
-                contentDescription = stringResource(R.string.image_for_article, article.title),
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 200.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Text(
-            text = article.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (article.description.isNotEmpty()) {
-            Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                text = article.description,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .clickable { onArticleClick(article.url) },
         ) {
-            Text(
-                text = article.sourceName, color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = article.publishedAt.formatDate(),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 12.sp
-            )
-        }
+            article.imageUrl?.let {
+                AsyncImage(
+                    model = it,
+                    contentDescription = stringResource(R.string.image_for_article, article.title),
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 200.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = article.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (article.description.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    text = article.description,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = article.sourceName, color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = article.publishedAt.formatDate(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
         Row(
             modifier = Modifier
