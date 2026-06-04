@@ -19,6 +19,8 @@ interface NewsRepository {
 
     fun getArticlesByTopics(topics: List<String>): Flow<List<Article>>
 
+    fun getArticleByUrl(url: String): Flow<Article?>
+
     suspend fun clearAllArticles(topics: List<String>)
 
     fun startBackgroundRefresh(

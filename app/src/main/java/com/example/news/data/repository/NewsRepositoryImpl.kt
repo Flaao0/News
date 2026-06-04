@@ -12,6 +12,7 @@ import com.example.news.data.local.NewsDao
 import com.example.news.data.local.SubscriptionDbModel
 import com.example.news.data.mapper.toDbModels
 import com.example.news.data.mapper.toEntities
+import com.example.news.data.mapper.toEntity
 import com.example.news.data.mapper.toQueryParam
 import com.example.news.data.remote.NewsApiService
 import com.example.news.domain.entity.Article
@@ -22,6 +23,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -84,6 +86,15 @@ class NewsRepositoryImpl @Inject constructor(
     override fun getArticlesByTopics(topics: List<String>): Flow<List<Article>> {
         return newsDao.getAllArticlesByTopics(topics).map {
             it.toEntities()
+        }
+    }
+
+    override fun getArticleByUrl(url: String): Flow<Article?> {
+        return combine(
+            newsDao.getArticleByUrl(url),
+            newsDao.getFavoriteByUrl(url),
+        ) { article, favorite ->
+            article?.toEntity() ?: favorite?.toEntity()
         }
     }
 

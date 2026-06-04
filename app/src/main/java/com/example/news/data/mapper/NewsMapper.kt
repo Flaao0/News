@@ -1,6 +1,7 @@
 package com.example.news.data.mapper
 
 import com.example.news.data.local.ArticleDbModel
+import com.example.news.data.local.FavoriteArticleDbModel
 import com.example.news.data.remote.NewsResponseDto
 import com.example.news.domain.entity.Article
 import com.example.news.domain.entity.Interval
@@ -24,17 +25,46 @@ fun NewsResponseDto.toDbModels(topic: String): List<ArticleDbModel>  {
     }
 }
 
+fun ArticleDbModel.toEntity(): Article {
+    return Article(
+        title = title,
+        description = description,
+        imageUrl = imageUrl,
+        sourceName = sourceName,
+        publishedAt = publishedAt,
+        url = url
+    )
+}
+
 fun List<ArticleDbModel>.toEntities(): List<Article> {
-    return map {
-        Article(
-            title = it.title,
-            description = it.description,
-            imageUrl = it.imageUrl,
-            sourceName = it.sourceName,
-            publishedAt = it.publishedAt,
-            url = it.url
-        )
-    }.distinct()
+    return map { it.toEntity() }.distinct()
+}
+
+fun FavoriteArticleDbModel.toEntity(): Article {
+    return Article(
+        title = title,
+        description = description,
+        imageUrl = imageUrl,
+        sourceName = sourceName,
+        publishedAt = publishedAt,
+        url = url,
+    )
+}
+
+fun List<FavoriteArticleDbModel>.toFavoriteEntities(): List<Article> {
+    return map { it.toEntity() }
+}
+
+fun Article.toFavoriteDbModel(savedAt: Long = System.currentTimeMillis()): FavoriteArticleDbModel {
+    return FavoriteArticleDbModel(
+        url = url,
+        title = title,
+        description = description,
+        imageUrl = imageUrl,
+        sourceName = sourceName,
+        publishedAt = publishedAt,
+        savedAt = savedAt,
+    )
 }
 
 private fun String.toTimeStamp() : Long {
