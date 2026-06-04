@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -61,6 +62,7 @@ import com.example.news.presentation.utils.formatDate
 fun SubscriptionsScreen(
     modifier: Modifier = Modifier,
     onNavigateToSettings: () -> Unit,
+    onNavigateToFavorites: () -> Unit,
     onArticleClick: (String) -> Unit,
     viewModel: SubscriptionsViewModel = hiltViewModel()
 ) {
@@ -73,6 +75,7 @@ fun SubscriptionsScreen(
                 onClearDataClick = {
                     viewModel.processCommand(SubscriptionsCommand.ClearArticles)
                 },
+                onFavoritesClick = onNavigateToFavorites,
                 onSettingsClick = onNavigateToSettings,
             )
         }) { innerPadding ->
@@ -145,6 +148,7 @@ fun SubscriptionsScreen(
 private fun SubscriptionsTopBar(
     onRefreshDataClick: () -> Unit,
     onClearDataClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -169,6 +173,16 @@ private fun SubscriptionsTopBar(
                 },
             imageVector = Icons.Default.Clear,
             contentDescription = stringResource(R.string.clear_articles)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            modifier = Modifier
+                .clip(CircleShape)
+                .clickable {
+                    onFavoritesClick()
+                },
+            imageVector = Icons.Default.Favorite,
+            contentDescription = stringResource(R.string.open_favorites)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Icon(

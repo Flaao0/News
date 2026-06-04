@@ -6,8 +6,10 @@ import androidx.work.WorkManager
 import com.example.news.data.local.NewsDao
 import com.example.news.data.local.NewsDatabase
 import com.example.news.data.remote.NewsApiService
+import com.example.news.data.repository.FavoritesRepositoryImpl
 import com.example.news.data.repository.NewsRepositoryImpl
 import com.example.news.data.repository.SettingsRepositoryImpl
+import com.example.news.domain.repository.FavoritesRepository
 import com.example.news.domain.repository.NewsRepository
 import com.example.news.domain.repository.SettingsRepository
 import dagger.Binds
@@ -40,6 +42,11 @@ interface DataModule {
         imlp: NewsRepositoryImpl
     ): NewsRepository
 
+    @Binds
+    @Singleton
+    fun bindFavoritesRepository(
+        impl: FavoritesRepositoryImpl
+    ): FavoritesRepository
 
     companion object {
 

@@ -19,9 +19,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -81,6 +84,31 @@ fun ArticleDetailsScreen(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
                     )
+                },
+                actions = {
+                    val contentState = state as? ArticleDetailsState.Content
+                    if (contentState != null) {
+                        IconButton(
+                            onClick = {
+                                viewModel.processCommand(ArticleDetailsCommand.ToggleFavorite)
+                            },
+                        ) {
+                            Icon(
+                                imageVector = if (contentState.isFavorite) {
+                                    Icons.Default.Favorite
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                },
+                                contentDescription = stringResource(
+                                    if (contentState.isFavorite) {
+                                        R.string.remove_from_favorites
+                                    } else {
+                                        R.string.add_to_favorites
+                                    },
+                                ),
+                            )
+                        }
+                    }
                 },
             )
         },

@@ -23,6 +23,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -89,7 +90,12 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override fun getArticleByUrl(url: String): Flow<Article?> {
-        return newsDao.getArticleByUrl(url).map { it?.toEntity() }
+        return combine(
+            newsDao.getArticleByUrl(url),
+            newsDao.getFavoriteByUrl(url),
+        ) { article, favorite ->
+            article?.toEntity() ?: favorite?.toEntity()
+        }
     }
 
     override suspend fun clearAllArticles(topics: List<String>) {

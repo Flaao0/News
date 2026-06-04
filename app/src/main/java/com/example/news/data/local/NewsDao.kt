@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.IGNORE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
@@ -32,4 +33,16 @@ interface NewsDao {
 
     @Query("DELETE FROM articles WHERE topic IN (:topics)")
     suspend fun deleteArticlesByTopics(topics: List<String>)
+
+    @Query("SELECT * FROM favorites ORDER BY savedAt DESC")
+    fun getAllFavorites(): Flow<List<FavoriteArticleDbModel>>
+
+    @Query("SELECT * FROM favorites WHERE url = :url LIMIT 1")
+    fun getFavoriteByUrl(url: String): Flow<FavoriteArticleDbModel?>
+
+    @Insert(onConflict = REPLACE)
+    suspend fun insertFavorite(favorite: FavoriteArticleDbModel)
+
+    @Query("DELETE FROM favorites WHERE url = :url")
+    suspend fun deleteFavorite(url: String)
 }
